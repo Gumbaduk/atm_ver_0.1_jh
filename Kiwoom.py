@@ -103,6 +103,8 @@ class Kiwoom(QAxWidget):
             self._opw00018(rqname, trcode)
         elif rqname == "opt10086_req":
             self._opt10086(rqname, trcode)
+        elif rqname == "opt10001_req":
+            self._opt10001(rqname, trcode)
 
         try:
             self.tr_event_loop.exit()
@@ -135,6 +137,19 @@ class Kiwoom(QAxWidget):
             strip_data = '-' + strip_data
 
         return strip_data
+
+    def _opt10001(self, rqname, trcode):
+        code = self._comm_get_data(trcode, "", rqname, 0, "종목코드")
+        name = self._comm_get_data(trcode, "", rqname, 0, "종목명")
+        month = self._comm_get_data(trcode, "", rqname, 0, "결산월")
+        face_value = self._comm_get_data(trcode, "", rqname, 0, "액면가")
+        capital = self._comm_get_data(trcode, "", rqname, 0, "자본금")
+
+        self.sbd['code'].append(code)
+        self.sbd['name'].append(name)
+        self.sbd['month'].append(month)
+        self.sbd['face_value'].append(face_value)
+        self.sbd['capital'].append(capital)
 
     def _opw00001(self, rqname, trcode):
         d2_deposit = self._comm_get_data(trcode, "", rqname, 0, "d+2추정예수금")
