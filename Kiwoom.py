@@ -105,6 +105,18 @@ class Kiwoom(QAxWidget):
             self._opt10086(rqname, trcode)
         elif rqname == "opt10001_req":
             self._opt10001(rqname, trcode)
+        elif rqname == "opt10002_req":
+            self._opt10002(rqname, trcode)
+        elif rqname == "opt10003_req":
+            self._opt10003(rqname, trcode)
+        elif rqname == "opt10004_req":
+            self._opt10004(rqname, trcode)
+        elif rqname == "opt10005_req":
+            self._opt10005(rqname, trcode)
+        elif rqname == "opt10006_req":
+            self._opt10006(rqname, trcode)
+        elif rqname == "opt20006_req":
+            self._opt20006(rqname, trcode)
 
         try:
             self.tr_event_loop.exit()
@@ -145,11 +157,103 @@ class Kiwoom(QAxWidget):
         face_value = self._comm_get_data(trcode, "", rqname, 0, "액면가")
         capital = self._comm_get_data(trcode, "", rqname, 0, "자본금")
 
-        self.sbd['code'].append(code)
-        self.sbd['name'].append(name)
-        self.sbd['month'].append(month)
-        self.sbd['face_value'].append(face_value)
-        self.sbd['capital'].append(capital)
+        self.df_10001['code'].append(code)
+        self.df_10001['name'].append(name)
+        self.df_10001['month'].append(int(month))
+        self.df_10001['face_value'].append(int(face_value))
+        self.df_10001['capital'].append(int(capital))
+
+    def _opt10002(self, rqname, trcode):
+        code = self._comm_get_data(trcode, "", rqname, 0, "종목코드")
+        name = self._comm_get_data(trcode, "", rqname, 0, "종목명")
+        seller1_name = self._comm_get_data(trcode, "", rqname, 0, "매도거래원명1")
+        seller1_origin = self._comm_get_data(trcode, "", rqname, 0, "매도거래원1")
+        seller1_volume = self._comm_get_data(trcode, "", rqname, 0, "매도거래량1")
+        buyer1_name = self._comm_get_data(trcode, "", rqname, 0, "매수거래원명1")
+        buyer1_origin = self._comm_get_data(trcode, "", rqname, 0, "매수거래원1")
+        buyer1_volume = self._comm_get_data(trcode, "", rqname, 0, "매수거래량1")
+
+        self.df_10002['code'].append(code)
+        self.df_10002['name'].append(name)
+        self.df_10002['매도거래원명1'].append(seller1_name)
+        self.df_10002['매도거래원1'].append(seller1_origin)
+        self.df_10002['매도거래량1'].append(seller1_volume)
+        self.df_10002['매수거래원명1'].append(buyer1_name)
+        self.df_10002['매수거래원1'].append(buyer1_origin)
+        self.df_10002['매수거래량1'].append(buyer1_volume)
+
+    def _opt10003(self, rqname, trcode):
+        data_cnt = self._get_repeat_cnt(trcode, rqname)
+
+        for i in range(data_cnt):
+
+            time = self._comm_get_data(trcode, "", rqname, i, "시간")
+            cur_price = self._comm_get_data(trcode, "", rqname, i, "현재가")
+            accumul_volume = self._comm_get_data(trcode, "", rqname, i, "누적거래량")
+
+            self.df_10003['시간'].append(time)
+            self.df_10003['현재가'].append(cur_price)
+            self.df_10003['누적거래량'].append(accumul_volume)
+
+
+    def _opt10004(self, rqname, trcode):
+        sell_residue = self._comm_get_data(trcode, "", rqname, 0, "총매도잔량")
+        buy_residue = self._comm_get_data(trcode, "", rqname, 0, "총매수잔량")
+        timeout_sell_residue = self._comm_get_data(trcode, "", rqname, 0, "시간외매도잔량")
+        timeout_buy_residue = self._comm_get_data(trcode, "", rqname, 0, "시간외매수잔량")
+
+        self.df_10004['총매도잔량'].append(sell_residue)
+        self.df_10004['총매수잔량'].append(buy_residue)
+        self.df_10004['시간외매도잔량'].append(timeout_sell_residue)
+        self.df_10004['시간외매수잔량'].append(timeout_buy_residue)
+
+    def _opt10005(self, rqname, trcode):
+
+        data_cnt = self._get_repeat_cnt(trcode, rqname)
+        for i in range(data_cnt):
+
+            date = self._comm_get_data(trcode, "", rqname, i, "날짜")
+            begin_price = self._comm_get_data(trcode, "", rqname, i, "시가")
+            high_price = self._comm_get_data(trcode, "", rqname, i, "고가")
+            low_price = self._comm_get_data(trcode, "", rqname, i, "저가")
+            finish_price = self._comm_get_data(trcode, "", rqname, i, "종가")
+
+            self.df_10005['날짜'].append(date)
+            self.df_10005['시가'].append(begin_price)
+            self.df_10005['고가'].append(high_price)
+            self.df_10005['저가'].append(low_price)
+            self.df_10005['종가'].append(finish_price)
+
+    def _opt10006(self, rqname, trcode):
+        data_cnt = self._get_repeat_cnt(trcode, rqname)
+        for i in range(data_cnt):
+
+            date = self._comm_get_data(trcode, "", rqname, i, "날짜")
+            begin_price = self._comm_get_data(trcode, "", rqname, i, "시가")
+            high_price = self._comm_get_data(trcode, "", rqname, i, "고가")
+            low_price = self._comm_get_data(trcode, "", rqname, i, "저가")
+            finish_price = self._comm_get_data(trcode, "", rqname, i, "종가")
+
+            self.df_10006['날짜'].append(date)
+            self.df_10006['시가'].append(begin_price)
+            self.df_10006['고가'].append(high_price)
+            self.df_10006['저가'].append(low_price)
+            self.df_10006['종가'].append(finish_price)
+
+    def _opt20006(self, rqname, trcode):
+        data_cnt = self._get_repeat_cnt(trcode, rqname)
+
+        for i in range(data_cnt):
+            date = self._comm_get_data(trcode, "", rqname, i, "일자")
+            begin_price = self._comm_get_data(trcode, "", rqname, i, "시가")
+            high_price = self._comm_get_data(trcode, "", rqname, i, "고가")
+            low_price = self._comm_get_data(trcode, "", rqname, i, "저가")
+
+            self.df_20006['일자'].append(date)
+            self.df_20006['시가'].append(begin_price)
+            self.df_20006['고가'].append(high_price)
+            self.df_20006['저가'].append(low_price)
+
 
     def _opw00001(self, rqname, trcode):
         d2_deposit = self._comm_get_data(trcode, "", rqname, 0, "d+2추정예수금")
@@ -212,6 +316,11 @@ class Kiwoom(QAxWidget):
         self.opw00018_output['single'].append(Kiwoom.change_format(total_eval_profit_loss_price))
 
         total_earning_rate = Kiwoom.change_format(total_earning_rate)
+
+
+
+
+
 
         if self.get_server_gubun():
             total_earning_rate = float(total_earning_rate) / 100
